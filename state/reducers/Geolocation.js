@@ -6,7 +6,7 @@ const defaultState = {
   loading: false,
   errors: [],
   lastKnownPosition: {
-    coordinages: {}
+    coordinates: {}
   }
 };
 
