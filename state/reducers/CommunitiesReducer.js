@@ -1,34 +1,29 @@
 import {
-  FETCH_COMMUNITIES, 
-  LIST_COMMUNITIES,
-  GET_COMMUNITY,
-  FETCH_COMMUNITIES_ERROR
+  GET_CURRENT_POSITION,
+  SET_CURRENT_POSITION,
+  GEOLOCATION_ERROR
 } from '../actions/CommunitiesActions';
 
 const defaultState = {
-  error: false,
-  errorMessage: null,
   loading: false,
-  communties: []
+  error: false,
+  errorMessage: '',
+  currentLocation: {},
+  communities: {}
 };
 
-const CommunitiesReducer = (state = defaultState, action) => {
+export default (state = defaultState, action) => {
   switch(action.type) {
-    case FETCH_COMMUNITIES:
+    case GET_CURRENT_POSITION:
       return { ...state, loading: true };
 
-    case LIST_COMMUNITIES:
-      return Object.assign({}, state, { communities: action.communities, loading: false });
+    case SET_CURRENT_POSITION:
+      return { ...state, loading: false, error: false, currentLocation: action.payload.coords };
 
-    case GET_COMMUNITY:
-      return state.communities.filter((community) => community.id === action.communityId)[0]
-
-    case FETCH_COMMUNITIES_ERROR:
-      return Object.assign({}, state, { error: true, errorMessage: action.error });
+    case GEOLOCATION_ERROR:
+      return { ...state, loading: false, error: true, errorMessage: action.payload.error.message }
 
     default:
       return state;
   }
 };
-
-export default Communities;
