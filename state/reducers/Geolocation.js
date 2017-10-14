@@ -3,11 +3,9 @@ import {
 } from '../actions/Geolocation';
 
 const defaultState = {
-  loading: false,
+  loading: true,
   errors: [],
-  lastKnownPosition: {
-    coordinates: {}
-  }
+  lastKnownPosition: {}
 };
 
 export default (state = defaultState, action) => {
@@ -20,7 +18,8 @@ export default (state = defaultState, action) => {
         ...state,
         loading: false, 
         lastKnownPosition: {
-          coordinages: action.payload.coordinages
+          latitude: action.payload.coordinates.latitude,
+          longitude: action.payload.coordinates.longitude
         }
       };
 

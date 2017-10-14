@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import MapView from 'react-native-maps';
 import { connect } from 'react-redux';
+import { Text } from 'react-native';
 
 import { fetchCommunities } from '../../state/actions/Communities';
 import { updateCurrentPosition } from '../../state/actions/Geolocation';
 import MapView from 'react-native-maps';
+
+import LoadingScreen from '../presentation/LoadingScreen';
 
 class Communities extends Component {
   constructor(props) {
@@ -12,19 +14,26 @@ class Communities extends Component {
   }
 
   componentWillMount() {
-    this.actions.updateCurrentPosition();
+    this.props.actions.updateCurrentPosition();
   }
 
   render() {
-    let { latitude, longitude } = this.props.geolocation.lastKnownPosition.coordinates;
+    let { loading } = this.props.geolocation;
+    let { latitude, longitude } = this.props.geolocation.lastKnownPosition;
 
+    if(loading || (latitude === 'undefined' && longitude === 'undefined')) {
+      return (<LoadingScreen />);
+    }
+    
     return (
-      <MapView initialRegion={{
-        latitude,
-        longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      }} />
+      <MapView
+        initialRegion={{
+          latitude: latitude,
+          longitude: longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421
+        }}
+      />
     );
   }
 }

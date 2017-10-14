@@ -2,7 +2,7 @@ import {
   GET_CURRENT_POSITION,
   SET_CURRENT_POSITION,
   GEOLOCATION_ERROR
-} from '../actions/CommunitiesActions';
+} from '../actions/Communities';
 
 const defaultState = {
   loading: false,

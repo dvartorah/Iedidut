@@ -1,4 +1,4 @@
-import Communities from './reducers/CommunitiesReducer';
+import Communities from './reducers/Communities';
 import Geolocation from './reducers/Geolocation';
 
 import thunk from 'redux-thunk';
