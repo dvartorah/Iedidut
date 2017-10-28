@@ -7,11 +7,13 @@ import {
 } from 'react-native';
 
 import { connect, Provider } from 'react-redux';
-import { StackNavigator, addNavigationHelpers } from 'react-navigation';
-import Communities from './components/screens/Communities';
-import store from './state';
+import { DrawerNavigator, addNavigationHelpers } from 'react-navigation';
+import Communities from './src/scenes/Communities';
+import Feed from './src/scenes/Feed';
+import store from './src/state';
 
-const RootNavigator = StackNavigator({
+const RootNavigator = DrawerNavigator({
+  Home: { screen: Feed },
   Communities: { screen: Communities }
 });
 
@@ -24,10 +26,6 @@ class Iedidut extends Component {
     );
   }
 }
-
-const mapStateToProps = (state) => {
-  nav: state.nav
-};
 
 export default Iedidut;
 
