@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MapView from 'react-native-maps';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { View, StyleSheet, Text, Image, ToastAndroid } from 'react-native';
 
 import AppBar from '../components/AppBar';
 import CommunityDescription from '../components/CommunityDescription';
@@ -35,6 +35,7 @@ class Communities extends Component {
     this.state = {
       loading: true,
       coordinatesReceived: false,
+      currentCommunity: null,
       communitiesList: [],
       coordinates: {
         lat: null,
@@ -68,13 +69,18 @@ class Communities extends Component {
     });
   }
 
+  selectCommunity = (id) => {
+    this.setState({ currentCommunity: id });
+  }
+
   renderCommunitiesMarkers = (communities = []) => {
-    return this.getCommunities().map((community) => {
+    return this.state.communitiesList.map((community) => {
       return (
         <MapView.Marker
           key={community.id}
           coordinate={community.coords}
           title={community.name}
+          onPress={() => this.setState({ currentCommunity: community.id })}
         >
           <Image source={require('../assets/images/hebrew.png')} style={styles.communityIcon} />
         </MapView.Marker>
@@ -82,8 +88,27 @@ class Communities extends Component {
     });
   }
 
+  _renderCurrentCommunity() {
+    const community = this.state.communitiesList.filter((community) => {
+      return community.id === this.state.currentCommunity
+    })[0];
+
+    if(community) {
+      return (
+        <CommunityDescription
+          id={community.id}
+          name={community.name}
+          email={community.email}
+        />
+      )
+    }
+
+    return null;
+  }
+
   componentWillMount() {
     this.setState({ loading: true });
+    this.setState({ communitiesList: this.getCommunities() });
 
     this.getCurrentPosition().then((coords) => {
       this.setState({
@@ -120,11 +145,7 @@ class Communities extends Component {
         </MapView>
         : <Spinner visible={true} /> }
 
-        <CommunityDescription
-          name="Beit Knesset Rambam"
-          email="pedro@ultimatum.com.br"
-          picture="teste.com"
-        />
+        { this._renderCurrentCommunity() }
       </View>
     );
   }

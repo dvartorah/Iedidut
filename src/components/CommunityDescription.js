@@ -1,25 +1,25 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { 
   View,
+  Animated,
   Text,
   StyleSheet,
   Dimensions,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Easing
 } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     width: Dimensions.get('window').width,
-    minHeight: 150,
+    height: 160,
     backgroundColor: '#FFFFFF',
     zIndex: 10,
-    flexDirection: 'column'
-  },
-
-  hidden: {
-    marginTop: Dimensions.get('window').height,
-    marginBottom: -Dimensions.get('window').height
+    flexDirection: 'column',
+    transform: [
+      { translateY: 160 }
+    ]
   },
 
   inner: {
@@ -69,29 +69,50 @@ const styles = StyleSheet.create({
   }
 });
 
-const CommunityDescription = ({ name, email, picture, onContactPress }) => {
-  return (
-    <View style={[styles.container]}>
-      <View style={styles.inner}>
-        <View style={styles.pictureContainer}>
-          <Image
-            style={styles.picture}
-            source={require('../assets/images/synagogue.png')}
-          />
+class CommunityDescription extends Component {
+  constructor(props) {
+    super();
+
+    this.state = { 
+      translateY: new Animated.Value((props.visible ? 0 : 160))
+    }
+
+    this.slideUp = Animated.timing(this.state.translateY, { toValue: 0, duration: 100, easing: Easing.in });
+    this.slideDown = Animated.timing(this.state.translateY, { toValue: 160, duration: 100, easing: Easing.in });
+  }
+
+  componentDidMount() {
+    this.slideUp.start();
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    Animated.sequence([this.slideDown, this.slideUp]).start();
+  }
+
+  render() {
+    return (
+      <Animated.View style={[styles.container, { transform: [{ translateY: this.state.translateY }] }]}>
+        <View style={styles.inner}>
+          <View style={styles.pictureContainer}>
+            <Image
+              style={styles.picture}
+              source={require('../assets/images/synagogue.png')}
+            />
+          </View>
+          
+          <View style={styles.descriptionContainer}>
+            <Text style={[styles.blackText, styles.communityName]}>{this.props.name}</Text>
+            <Text style={[styles.blackText, styles.communitySecondaryData]}>{this.props.email}</Text>
+            <Text style={[styles.blackText, styles.communitySecondaryData]}>{this.props.picture}</Text>
+          </View>
         </View>
-        
-        <View style={styles.descriptionContainer}>
-          <Text style={[styles.blackText, styles.communityName]}>{name}</Text>
-          <Text style={[styles.blackText, styles.communitySecondaryData]}>{email}</Text>
-          <Text style={[styles.blackText, styles.communitySecondaryData]}>{picture}</Text>
-        </View>
-      </View>
-  
-      <TouchableOpacity style={styles.contactButton}>
-        <Text style={styles.buttonText}>Mais informações</Text>
-      </TouchableOpacity>
-    </View>
-  )
+    
+        <TouchableOpacity style={styles.contactButton}>
+          <Text style={styles.buttonText}>Mais informações</Text>
+        </TouchableOpacity>
+      </Animated.View>
+    )
+  }
 };
 
 export default CommunityDescription;
