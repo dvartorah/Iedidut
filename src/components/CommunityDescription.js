@@ -86,7 +86,9 @@ class CommunityDescription extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    Animated.sequence([this.slideDown, this.slideUp]).start();
+    if(nextProps.id != this.props.id) {
+      Animated.sequence([this.slideDown, this.slideUp]).start();
+    }
   }
 
   render() {
